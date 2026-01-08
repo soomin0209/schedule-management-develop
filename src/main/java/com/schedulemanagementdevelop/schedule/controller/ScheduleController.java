@@ -2,6 +2,7 @@ package com.schedulemanagementdevelop.schedule.controller;
 
 import com.schedulemanagementdevelop.schedule.dto.CreateScheduleRequest;
 import com.schedulemanagementdevelop.schedule.dto.CreateScheduleResponse;
+import com.schedulemanagementdevelop.schedule.dto.GetScheduleResponse;
 import com.schedulemanagementdevelop.schedule.dto.GetSchedulesResponse;
 import com.schedulemanagementdevelop.schedule.service.ScheduleService;
 import lombok.RequiredArgsConstructor;
@@ -29,5 +30,12 @@ public class ScheduleController {
             @RequestParam(required = false) String writer
     ) {
         return ResponseEntity.status(HttpStatus.OK).body(scheduleService.findAll(writer));
+    }
+
+    @GetMapping("/schedules/{scheduleId}")
+    public ResponseEntity<GetScheduleResponse> getOne(
+            @PathVariable Long scheduleId
+    ) {
+        return ResponseEntity.status(HttpStatus.OK).body(scheduleService.findOne(scheduleId));
     }
 }

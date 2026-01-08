@@ -2,6 +2,7 @@ package com.schedulemanagementdevelop.schedule.service;
 
 import com.schedulemanagementdevelop.schedule.dto.CreateScheduleRequest;
 import com.schedulemanagementdevelop.schedule.dto.CreateScheduleResponse;
+import com.schedulemanagementdevelop.schedule.dto.GetScheduleResponse;
 import com.schedulemanagementdevelop.schedule.dto.GetSchedulesResponse;
 import com.schedulemanagementdevelop.schedule.entity.Schedule;
 import com.schedulemanagementdevelop.schedule.repository.ScheduleRepository;
@@ -31,7 +32,7 @@ public class ScheduleService {
         );
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public List<GetSchedulesResponse> findAll(String writer) {
         List<Schedule> schedules = scheduleRepository.findByWriter(writer);
         return schedules.stream()
@@ -42,5 +43,20 @@ public class ScheduleService {
                         schedule.getCreatedAt(),
                         schedule.getModifiedAt()
                 )).toList();
+    }
+
+    @Transactional(readOnly = true)
+    public GetScheduleResponse findOne(Long scheduleId) {
+        Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(
+                () -> new IllegalStateException("없는 일정입니다.")
+        );
+        return new GetScheduleResponse(
+                schedule.getId(),
+                schedule.getWriter(),
+                schedule.getTitle(),
+                schedule.getContent(),
+                schedule.getCreatedAt(),
+                schedule.getModifiedAt()
+        );
     }
 }
