@@ -17,7 +17,10 @@ public class UserService {
 
     @Transactional
     public CreateUserResponse save(CreateUserRequest request) {
-        User user = new User(request.getName(), request.getEmail());
+        if (request.getPassword() == null || request.getPassword().length() < 8) {
+            throw new IllegalStateException("비밀번호는 8자 이상입니다.");
+        }
+        User user = new User(request.getName(), request.getEmail(), request.getPassword());
         User savedUser = userRepository.save(user);
         return new CreateUserResponse(
                 savedUser.getId(),
