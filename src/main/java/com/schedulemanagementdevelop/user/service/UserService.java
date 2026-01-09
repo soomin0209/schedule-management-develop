@@ -40,9 +40,7 @@ public class UserService {
         return new SessionUser(
                 user.getId(),
                 user.getName(),
-                user.getEmail(),
-                user.getCreatedAt(),
-                user.getModifiedAt()
+                user.getEmail()
         );
     }
 
