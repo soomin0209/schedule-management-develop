@@ -78,7 +78,7 @@ public class UserService {
         User user = userRepository.findById(userId).orElseThrow(
                 () -> new IllegalStateException("없는 유저입니다.")
         );
-        user.update(request.getName(), request.getEmail());
+        user.update(request.getName());
         return new UpdateUserResponse(
                 user.getId(),
                 user.getName(),
