@@ -42,4 +42,18 @@ public class UserService {
                         user.getModifiedAt()
                 )).toList();
     }
+
+    @Transactional(readOnly = true)
+    public GetUserResponse findOne(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> new IllegalStateException("없는 유저입니다.")
+        );
+        return new GetUserResponse(
+                user.getId(),
+                user.getName(),
+                user.getEmail(),
+                user.getCreatedAt(),
+                user.getModifiedAt()
+        );
+    }
 }

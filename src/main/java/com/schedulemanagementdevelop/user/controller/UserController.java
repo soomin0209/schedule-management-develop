@@ -7,10 +7,7 @@ import com.schedulemanagementdevelop.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -30,5 +27,12 @@ public class UserController {
     @GetMapping("/users")
     public ResponseEntity<List<GetUserResponse>> getAll() {
         return ResponseEntity.status(HttpStatus.OK).body(userService.findAll());
+    }
+
+    @GetMapping("/users/{userId}")
+    public ResponseEntity<GetUserResponse> getOne(
+            @PathVariable Long userId
+    ) {
+        return ResponseEntity.status(HttpStatus.OK).body(userService.findOne(userId));
     }
 }
