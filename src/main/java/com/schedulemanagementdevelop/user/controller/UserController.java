@@ -39,7 +39,7 @@ public class UserController {
             HttpSession session
     ) {
         if (sessionUser == null) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
         session.invalidate();
@@ -64,7 +64,7 @@ public class UserController {
             @RequestBody UpdateUserRequest request
     ) {
         if (sessionUser == null) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
         return ResponseEntity.status(HttpStatus.OK).body(userService.update(sessionUser.getId(), request));
@@ -76,7 +76,7 @@ public class UserController {
             HttpSession session
     ) {
         if (sessionUser == null) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
         userService.delete(sessionUser.getId());

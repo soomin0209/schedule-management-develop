@@ -1,5 +1,7 @@
 package com.schedulemanagementdevelop.user.service;
 
+import com.schedulemanagementdevelop.UserNotFoundException;
+import com.schedulemanagementdevelop.WrongPasswordException;
 import com.schedulemanagementdevelop.user.dto.*;
 import com.schedulemanagementdevelop.user.entity.User;
 import com.schedulemanagementdevelop.user.repository.UserRepository;
@@ -32,10 +34,10 @@ public class UserService {
     @Transactional(readOnly = true)
     public SessionUser login(@Valid LoginUserRequest request) {
         User user = userRepository.findByEmail(request.getEmail()).orElseThrow(
-                () -> new IllegalStateException("없는 유저입니다.")
+                () -> new UserNotFoundException("없는 유저입니다.")
         );
         if (!request.getPassword().equals(user.getPassword())) {
-            throw new IllegalStateException("비밀번호가 일치하지 않습니다");
+            throw new WrongPasswordException("비밀번호가 일치하지 않습니다");
         }
         return new SessionUser(
                 user.getId(),
@@ -60,7 +62,7 @@ public class UserService {
     @Transactional(readOnly = true)
     public GetUserResponse findOne(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(
-                () -> new IllegalStateException("없는 유저입니다.")
+                () -> new UserNotFoundException("없는 유저입니다.")
         );
         return new GetUserResponse(
                 user.getId(),
@@ -74,7 +76,7 @@ public class UserService {
     @Transactional
     public UpdateUserResponse update(Long userId, UpdateUserRequest request) {
         User user = userRepository.findById(userId).orElseThrow(
-                () -> new IllegalStateException("없는 유저입니다.")
+                () -> new UserNotFoundException("없는 유저입니다.")
         );
         user.update(request.getName());
         return new UpdateUserResponse(
@@ -90,7 +92,7 @@ public class UserService {
     public void delete(Long userId) {
         boolean existence = userRepository.existsById(userId);
         if (!existence) {
-            throw new IllegalStateException("없는 유저입니다.");
+            throw new UserNotFoundException("없는 유저입니다.");
         }
         userRepository.deleteById(userId);
     }

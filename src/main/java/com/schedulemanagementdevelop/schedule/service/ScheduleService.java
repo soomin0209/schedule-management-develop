@@ -1,5 +1,8 @@
 package com.schedulemanagementdevelop.schedule.service;
 
+import com.schedulemanagementdevelop.ScheduleNotFoundException;
+import com.schedulemanagementdevelop.ScheduleWriterMismatchException;
+import com.schedulemanagementdevelop.UserNotFoundException;
 import com.schedulemanagementdevelop.schedule.dto.*;
 import com.schedulemanagementdevelop.schedule.entity.Schedule;
 import com.schedulemanagementdevelop.schedule.repository.ScheduleRepository;
@@ -21,7 +24,7 @@ public class ScheduleService {
     @Transactional
     public CreateScheduleResponse save(Long userId, CreateScheduleRequest request) {
         User user = userRepository.findById(userId).orElseThrow(
-                () -> new IllegalStateException("없는 유저입니다.")
+                () -> new UserNotFoundException("없는 유저입니다.")
         );
         Schedule schedule = new Schedule(user, request.getTitle(), request.getContent());
         Schedule savedSchedule = scheduleRepository.save(schedule);
@@ -51,7 +54,7 @@ public class ScheduleService {
     @Transactional(readOnly = true)
     public GetScheduleResponse findOne(Long scheduleId) {
         Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(
-                () -> new IllegalStateException("없는 일정입니다.")
+                () -> new ScheduleNotFoundException("없는 일정입니다.")
         );
         return new GetScheduleResponse(
                 schedule.getId(),
@@ -66,10 +69,10 @@ public class ScheduleService {
     @Transactional
     public UpdateScheduleResponse update(Long userId, Long scheduleId, UpdateScheduleRequest request) {
         Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(
-                () -> new IllegalStateException("없는 일정입니다.")
+                () -> new ScheduleNotFoundException("없는 일정입니다.")
         );
         if (!schedule.getUser().getId().equals(userId)) {
-            throw new IllegalStateException("해당 일정의 작성자가 아닙니다.");
+            throw new ScheduleWriterMismatchException("해당 일정의 작성자가 아닙니다.");
         }
 
         schedule.update(request.getTitle());
@@ -85,10 +88,10 @@ public class ScheduleService {
     @Transactional
     public void delete(Long userId, Long scheduleId) {
         Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(
-                () -> new IllegalStateException("없는 일정입니다.")
+                () -> new ScheduleNotFoundException("없는 일정입니다.")
         );
         if (!schedule.getUser().getId().equals(userId)) {
-            throw new IllegalStateException("해당 일정의 작성자가 아닙니다.");
+            throw new ScheduleWriterMismatchException("해당 일정의 작성자가 아닙니다.");
         }
         scheduleRepository.deleteById(scheduleId);
     }

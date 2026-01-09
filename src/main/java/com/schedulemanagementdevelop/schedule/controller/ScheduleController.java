@@ -22,7 +22,7 @@ public class ScheduleController {
             @RequestBody CreateScheduleRequest request
     ) {
         if (sessionUser == null) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
         return ResponseEntity.status(HttpStatus.CREATED).body(scheduleService.save(sessionUser.getId(), request));
@@ -49,7 +49,7 @@ public class ScheduleController {
             @RequestBody UpdateScheduleRequest request
     ) {
         if (sessionUser == null) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
         return ResponseEntity.status(HttpStatus.OK).body(scheduleService.update(sessionUser.getId(), scheduleId, request));
@@ -61,7 +61,7 @@ public class ScheduleController {
             @PathVariable Long scheduleId
     ) {
         if (sessionUser == null) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
         scheduleService.delete(sessionUser.getId(), scheduleId);
