@@ -1,8 +1,6 @@
 package com.schedulemanagementdevelop.user.service;
 
-import com.schedulemanagementdevelop.user.dto.CreateUserRequest;
-import com.schedulemanagementdevelop.user.dto.CreateUserResponse;
-import com.schedulemanagementdevelop.user.dto.GetUserResponse;
+import com.schedulemanagementdevelop.user.dto.*;
 import com.schedulemanagementdevelop.user.entity.User;
 import com.schedulemanagementdevelop.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -49,6 +47,21 @@ public class UserService {
                 () -> new IllegalStateException("없는 유저입니다.")
         );
         return new GetUserResponse(
+                user.getId(),
+                user.getName(),
+                user.getEmail(),
+                user.getCreatedAt(),
+                user.getModifiedAt()
+        );
+    }
+
+    @Transactional
+    public UpdateUserResponse update(Long userId, UpdateUserRequest request) {
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> new IllegalStateException("없는 유저입니다.")
+        );
+        user.update(request.getName(), request.getEmail());
+        return new UpdateUserResponse(
                 user.getId(),
                 user.getName(),
                 user.getEmail(),

@@ -1,8 +1,6 @@
 package com.schedulemanagementdevelop.user.controller;
 
-import com.schedulemanagementdevelop.user.dto.CreateUserRequest;
-import com.schedulemanagementdevelop.user.dto.CreateUserResponse;
-import com.schedulemanagementdevelop.user.dto.GetUserResponse;
+import com.schedulemanagementdevelop.user.dto.*;
 import com.schedulemanagementdevelop.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -34,5 +32,13 @@ public class UserController {
             @PathVariable Long userId
     ) {
         return ResponseEntity.status(HttpStatus.OK).body(userService.findOne(userId));
+    }
+
+    @PatchMapping("/users/{userId}")
+    public ResponseEntity<UpdateUserResponse> update(
+            @PathVariable Long userId,
+            @RequestBody UpdateUserRequest request
+    ) {
+        return ResponseEntity.status(HttpStatus.OK).body(userService.update(userId, request));
     }
 }
