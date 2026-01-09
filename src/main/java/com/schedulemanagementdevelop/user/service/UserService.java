@@ -1,7 +1,7 @@
 package com.schedulemanagementdevelop.user.service;
 
-import com.schedulemanagementdevelop.UserNotFoundException;
-import com.schedulemanagementdevelop.WrongPasswordException;
+import com.schedulemanagementdevelop.common.exception.UserNotFoundException;
+import com.schedulemanagementdevelop.common.exception.WrongPasswordException;
 import com.schedulemanagementdevelop.user.dto.*;
 import com.schedulemanagementdevelop.user.entity.User;
 import com.schedulemanagementdevelop.user.repository.UserRepository;

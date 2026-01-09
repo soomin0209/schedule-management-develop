@@ -1,4 +1,4 @@
-package com.schedulemanagementdevelop;
+package com.schedulemanagementdevelop.common.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

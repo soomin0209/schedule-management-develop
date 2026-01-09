@@ -1,8 +1,8 @@
 package com.schedulemanagementdevelop.schedule.service;
 
-import com.schedulemanagementdevelop.ScheduleNotFoundException;
-import com.schedulemanagementdevelop.ScheduleWriterMismatchException;
-import com.schedulemanagementdevelop.UserNotFoundException;
+import com.schedulemanagementdevelop.common.exception.ScheduleNotFoundException;
+import com.schedulemanagementdevelop.common.exception.ScheduleWriterMismatchException;
+import com.schedulemanagementdevelop.common.exception.UserNotFoundException;
 import com.schedulemanagementdevelop.schedule.dto.*;
 import com.schedulemanagementdevelop.schedule.entity.Schedule;
 import com.schedulemanagementdevelop.schedule.repository.ScheduleRepository;
