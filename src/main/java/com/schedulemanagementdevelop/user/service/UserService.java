@@ -74,7 +74,7 @@ public class UserService {
     public void delete(Long userId) {
         boolean existence = userRepository.existsById(userId);
         if (!existence) {
-            throw new IllegalArgumentException("없는 유저입니다.");
+            throw new IllegalStateException("없는 유저입니다.");
         }
         userRepository.deleteById(userId);
     }

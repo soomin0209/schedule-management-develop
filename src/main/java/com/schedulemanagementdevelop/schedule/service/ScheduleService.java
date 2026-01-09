@@ -3,6 +3,8 @@ package com.schedulemanagementdevelop.schedule.service;
 import com.schedulemanagementdevelop.schedule.dto.*;
 import com.schedulemanagementdevelop.schedule.entity.Schedule;
 import com.schedulemanagementdevelop.schedule.repository.ScheduleRepository;
+import com.schedulemanagementdevelop.user.entity.User;
+import com.schedulemanagementdevelop.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,14 +16,18 @@ import java.util.List;
 public class ScheduleService {
 
     private final ScheduleRepository scheduleRepository;
+    private final UserRepository userRepository;
 
     @Transactional
     public CreateScheduleResponse save(CreateScheduleRequest request) {
-        Schedule schedule = new Schedule(request.getWriter(), request.getTitle(), request.getContent());
+        User user = userRepository.findById(request.getUserId()).orElseThrow(
+                () -> new IllegalStateException("없는 유저입니다.")
+        );
+        Schedule schedule = new Schedule(user, request.getTitle(), request.getContent());
         Schedule savedSchedule = scheduleRepository.save(schedule);
         return new CreateScheduleResponse(
                 savedSchedule.getId(),
-                savedSchedule.getWriter(),
+                savedSchedule.getUser().getId(),
                 savedSchedule.getTitle(),
                 savedSchedule.getContent(),
                 savedSchedule.getCreatedAt(),
@@ -30,12 +36,12 @@ public class ScheduleService {
     }
 
     @Transactional(readOnly = true)
-    public List<GetSchedulesResponse> findAll(String writer) {
-        List<Schedule> schedules = scheduleRepository.findByWriter(writer);
+    public List<GetSchedulesResponse> findAll(Long userId) {
+        List<Schedule> schedules = scheduleRepository.findByUser(userId);
         return schedules.stream()
                 .map(schedule -> new GetSchedulesResponse(
                         schedule.getId(),
-                        schedule.getWriter(),
+                        schedule.getUser().getId(),
                         schedule.getTitle(),
                         schedule.getCreatedAt(),
                         schedule.getModifiedAt()
@@ -49,7 +55,7 @@ public class ScheduleService {
         );
         return new GetScheduleResponse(
                 schedule.getId(),
-                schedule.getWriter(),
+                schedule.getUser().getId(),
                 schedule.getTitle(),
                 schedule.getContent(),
                 schedule.getCreatedAt(),
@@ -62,10 +68,10 @@ public class ScheduleService {
         Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(
                 () -> new IllegalStateException("없는 일정입니다.")
         );
-        schedule.update(request.getWriter(), request.getTitle());
+        schedule.update(request.getTitle());
         return new UpdateScheduleResponse(
                 schedule.getId(),
-                schedule.getWriter(),
+                schedule.getUser().getId(),
                 schedule.getTitle(),
                 schedule.getCreatedAt(),
                 schedule.getModifiedAt()
@@ -76,7 +82,7 @@ public class ScheduleService {
     public void delete(Long scheduleId) {
         boolean existence = scheduleRepository.existsById(scheduleId);
         if (!existence) {
-            throw new IllegalArgumentException("없는 일정입니다.");
+            throw new IllegalStateException("없는 일정입니다.");
         }
         scheduleRepository.deleteById(scheduleId);
     }
