@@ -19,8 +19,8 @@ public class ScheduleService {
     private final UserRepository userRepository;
 
     @Transactional
-    public CreateScheduleResponse save(CreateScheduleRequest request) {
-        User user = userRepository.findById(request.getUserId()).orElseThrow(
+    public CreateScheduleResponse save(Long userId, CreateScheduleRequest request) {
+        User user = userRepository.findById(userId).orElseThrow(
                 () -> new IllegalStateException("없는 유저입니다.")
         );
         Schedule schedule = new Schedule(user, request.getTitle(), request.getContent());
@@ -64,10 +64,14 @@ public class ScheduleService {
     }
 
     @Transactional
-    public UpdateScheduleResponse update(Long scheduleId, UpdateScheduleRequest request) {
+    public UpdateScheduleResponse update(Long userId, Long scheduleId, UpdateScheduleRequest request) {
         Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(
                 () -> new IllegalStateException("없는 일정입니다.")
         );
+        if (!schedule.getUser().getId().equals(userId)) {
+            throw new IllegalStateException("해당 일정의 작성자가 아닙니다.");
+        }
+
         schedule.update(request.getTitle());
         return new UpdateScheduleResponse(
                 schedule.getId(),
@@ -79,10 +83,12 @@ public class ScheduleService {
     }
 
     @Transactional
-    public void delete(Long scheduleId) {
-        boolean existence = scheduleRepository.existsById(scheduleId);
-        if (!existence) {
-            throw new IllegalStateException("없는 일정입니다.");
+    public void delete(Long userId, Long scheduleId) {
+        Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(
+                () -> new IllegalStateException("없는 일정입니다.")
+        );
+        if (!schedule.getUser().getId().equals(userId)) {
+            throw new IllegalStateException("해당 일정의 작성자가 아닙니다.");
         }
         scheduleRepository.deleteById(scheduleId);
     }

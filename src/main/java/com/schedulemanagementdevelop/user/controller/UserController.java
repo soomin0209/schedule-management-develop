@@ -63,6 +63,10 @@ public class UserController {
             @SessionAttribute(name = "loginUser", required = false) SessionUser sessionUser,
             @RequestBody UpdateUserRequest request
     ) {
+        if (sessionUser == null) {
+            return ResponseEntity.badRequest().build();
+        }
+
         return ResponseEntity.status(HttpStatus.OK).body(userService.update(sessionUser.getId(), request));
     }
 
