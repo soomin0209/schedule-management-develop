@@ -45,19 +45,19 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(userService.findOne(userId));
     }
 
-    @PatchMapping("/users/{userId}")
+    @PatchMapping("/users")
     public ResponseEntity<UpdateUserResponse> update(
-            @PathVariable Long userId,
+            @SessionAttribute(name = "loginUser", required = false) SessionUser sessionUser,
             @RequestBody UpdateUserRequest request
     ) {
-        return ResponseEntity.status(HttpStatus.OK).body(userService.update(userId, request));
+        return ResponseEntity.status(HttpStatus.OK).body(userService.update(sessionUser.getId(), request));
     }
 
-    @DeleteMapping("/users/{userId}")
+    @DeleteMapping("/users")
     public ResponseEntity<Void> delete(
-            @PathVariable Long userId
+            @SessionAttribute(name = "loginUser", required = false) SessionUser sessionUser
     ) {
-        userService.delete(userId);
+        userService.delete(sessionUser.getId());
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }
