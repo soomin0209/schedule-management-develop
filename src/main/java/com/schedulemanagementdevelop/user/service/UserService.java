@@ -3,6 +3,7 @@ package com.schedulemanagementdevelop.user.service;
 import com.schedulemanagementdevelop.user.dto.*;
 import com.schedulemanagementdevelop.user.entity.User;
 import com.schedulemanagementdevelop.user.repository.UserRepository;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,18 +17,32 @@ public class UserService {
     private final UserRepository userRepository;
 
     @Transactional
-    public CreateUserResponse save(CreateUserRequest request) {
-        if (request.getPassword() == null || request.getPassword().length() < 8) {
-            throw new IllegalStateException("비밀번호는 8자 이상입니다.");
-        }
+    public SignupUserResponse save(@Valid SignupUserRequest request) {
         User user = new User(request.getName(), request.getEmail(), request.getPassword());
         User savedUser = userRepository.save(user);
-        return new CreateUserResponse(
+        return new SignupUserResponse(
                 savedUser.getId(),
                 savedUser.getName(),
                 savedUser.getEmail(),
                 savedUser.getCreatedAt(),
                 savedUser.getModifiedAt()
+        );
+    }
+
+    @Transactional(readOnly = true)
+    public SessionUser login(@Valid LoginUserRequest request) {
+        User user = userRepository.findByEmail(request.getEmail()).orElseThrow(
+                () -> new IllegalStateException("없는 유저입니다.")
+        );
+        if (!request.getPassword().equals(user.getPassword())) {
+            throw new IllegalStateException("비밀번호가 일치하지 않습니다");
+        }
+        return new SessionUser(
+                user.getId(),
+                user.getName(),
+                user.getEmail(),
+                user.getCreatedAt(),
+                user.getModifiedAt()
         );
     }
 
