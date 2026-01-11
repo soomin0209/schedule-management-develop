@@ -79,6 +79,7 @@ public class CommentService {
         );
     }
 
+    @Transactional
     public void delete(Long userId, Long scheduleId, Long commentId) {
         Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(
                 () -> new ScheduleNotFoundException("없는 일정입니다.")
