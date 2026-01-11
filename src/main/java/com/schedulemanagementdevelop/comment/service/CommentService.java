@@ -23,6 +23,7 @@ public class CommentService {
     private final ScheduleRepository scheduleRepository;
     private final UserRepository userRepository;
 
+    // 댓글 생성
     @Transactional
     public CreateCommentResponse save(Long userId, Long scheduleId, @Valid CreateCommentRequest request) {
         User user = userRepository.findById(userId).orElseThrow(
@@ -43,6 +44,7 @@ public class CommentService {
         );
     }
 
+    // 댓글 조회
     @Transactional(readOnly = true)
     public List<GetCommentResponse> findAll(Long scheduleId) {
         List<Comment> comments = commentRepository.findByScheduleIdOrderByCreatedAt(scheduleId);
@@ -56,6 +58,7 @@ public class CommentService {
                 )).toList();
     }
 
+    // 댓글 수정
     @Transactional
     public UpdateCommentResponse update(Long userId, Long scheduleId, Long commentId, @Valid UpdateCommentRequest request) {
         Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(
@@ -67,7 +70,6 @@ public class CommentService {
         if (!comment.getUser().getId().equals(userId)) {
             throw new CommentWriterMismatchException("해당 댓글의 작성자가 아닙니다.");
         }
-
         comment.update(request.getContent());
         return new UpdateCommentResponse(
                 comment.getId(),
@@ -79,6 +81,7 @@ public class CommentService {
         );
     }
 
+    // 댓글 삭제
     @Transactional
     public void delete(Long userId, Long scheduleId, Long commentId) {
         Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(
@@ -90,7 +93,6 @@ public class CommentService {
         if (!comment.getUser().getId().equals(userId)) {
             throw new CommentWriterMismatchException("해당 댓글의 작성자가 아닙니다.");
         }
-
         commentRepository.deleteById(commentId);
     }
 }

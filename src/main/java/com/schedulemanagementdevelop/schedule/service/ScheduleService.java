@@ -25,6 +25,7 @@ public class ScheduleService {
     private final UserRepository userRepository;
     private final CommentRepository commentRepository;
 
+    // 일정 생성
     @Transactional
     public CreateScheduleResponse save(Long userId, @Valid CreateScheduleRequest request) {
         User user = userRepository.findById(userId).orElseThrow(
@@ -42,6 +43,7 @@ public class ScheduleService {
         );
     }
 
+    // 일정 전체 조회
     @Transactional(readOnly = true)
     public List<GetSchedulesResponse> findAll(Long userId) {
         List<Schedule> schedules = scheduleRepository.findByUserIdOrderByModifiedAtDesc(userId);
@@ -55,11 +57,13 @@ public class ScheduleService {
                 )).toList();
     }
 
+    // 일정 단건 조회
     @Transactional(readOnly = true)
     public GetScheduleResponse findOne(Long scheduleId) {
         Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(
                 () -> new ScheduleNotFoundException("없는 일정입니다.")
         );
+        // 해당 일정에 달린 댓글 조회
         List<Comment> comments = commentRepository.findByScheduleIdOrderByCreatedAt(scheduleId);
         List<GetScheduleCommentsResponse> scheduleComments = comments.stream()
                 .map(comment -> new GetScheduleCommentsResponse(
@@ -78,6 +82,7 @@ public class ScheduleService {
         );
     }
 
+    // 일정 수정
     @Transactional
     public UpdateScheduleResponse update(Long userId, Long scheduleId, @Valid UpdateScheduleRequest request) {
         Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(
@@ -86,7 +91,6 @@ public class ScheduleService {
         if (!schedule.getUser().getId().equals(userId)) {
             throw new ScheduleWriterMismatchException("해당 일정의 작성자가 아닙니다.");
         }
-
         schedule.update(request.getTitle());
         return new UpdateScheduleResponse(
                 schedule.getId(),
@@ -97,6 +101,7 @@ public class ScheduleService {
         );
     }
 
+    // 일정 삭제
     @Transactional
     public void delete(Long userId, Long scheduleId) {
         Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(

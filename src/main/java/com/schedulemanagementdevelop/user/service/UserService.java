@@ -24,6 +24,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final ScheduleRepository scheduleRepository;
 
+    // 유저 생성 (회원가입)
     @Transactional
     public SignupUserResponse save(@Valid SignupUserRequest request) {
         if (userRepository.findByEmail(request.getEmail()).isPresent()) {
@@ -41,6 +42,7 @@ public class UserService {
         );
     }
 
+    // 로그인
     @Transactional(readOnly = true)
     public SessionUser login(@Valid LoginUserRequest request) {
         User user = userRepository.findByEmail(request.getEmail()).orElseThrow(
@@ -56,6 +58,7 @@ public class UserService {
         );
     }
 
+    // 유저 전체 조회
     @Transactional(readOnly = true)
     public List<GetUsersResponse> findAll() {
         List<User> users = userRepository.findAll();
@@ -69,11 +72,13 @@ public class UserService {
                 )).toList();
     }
 
+    // 유저 단건 조회
     @Transactional(readOnly = true)
     public GetUserResponse findOne(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(
                 () -> new UserNotFoundException("없는 유저입니다.")
         );
+        // 해당 유저가 등록한 일정 조회
         List<Schedule> schedules = scheduleRepository.findByUserIdOrderByModifiedAtDesc(userId);
         List<GetUserSchedulesResponse> userSchedules = schedules.stream()
                 .map(schedule -> new GetUserSchedulesResponse(
@@ -90,6 +95,7 @@ public class UserService {
         );
     }
 
+    // 유저 수정 (회원정보수정)
     @Transactional
     public UpdateUserResponse update(Long userId, @Valid UpdateUserRequest request) {
         User user = userRepository.findById(userId).orElseThrow(
@@ -105,6 +111,7 @@ public class UserService {
         );
     }
 
+    // 유저 삭제 (회원탈퇴)
     @Transactional
     public void delete(Long userId) {
         boolean existence = userRepository.existsById(userId);

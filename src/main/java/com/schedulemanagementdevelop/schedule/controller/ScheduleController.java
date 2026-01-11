@@ -17,6 +17,7 @@ public class ScheduleController {
 
     private final ScheduleService scheduleService;
 
+    // 일정 생성
     @PostMapping("/schedules")
     public ResponseEntity<CreateScheduleResponse> create(
             @SessionAttribute(name = "loginUser", required = false) SessionUser sessionUser,
@@ -25,10 +26,10 @@ public class ScheduleController {
         if (sessionUser == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-
         return ResponseEntity.status(HttpStatus.CREATED).body(scheduleService.save(sessionUser.getId(), request));
     }
 
+    // 일정 전체 조회
     @GetMapping("/schedules")
     public ResponseEntity<List<GetSchedulesResponse>> getAll(
             @RequestParam(required = false) Long userId
@@ -36,6 +37,7 @@ public class ScheduleController {
         return ResponseEntity.status(HttpStatus.OK).body(scheduleService.findAll(userId));
     }
 
+    // 일정 단건 조회
     @GetMapping("/schedules/{scheduleId}")
     public ResponseEntity<GetScheduleResponse> getOne(
             @PathVariable Long scheduleId
@@ -43,6 +45,7 @@ public class ScheduleController {
         return ResponseEntity.status(HttpStatus.OK).body(scheduleService.findOne(scheduleId));
     }
 
+    // 일정 수정
     @PatchMapping("/schedules/{scheduleId}")
     public ResponseEntity<UpdateScheduleResponse> update(
             @SessionAttribute(name = "loginUser", required = false) SessionUser sessionUser,
@@ -52,10 +55,10 @@ public class ScheduleController {
         if (sessionUser == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-
         return ResponseEntity.status(HttpStatus.OK).body(scheduleService.update(sessionUser.getId(), scheduleId, request));
     }
 
+    // 일정 삭제
     @DeleteMapping("/schedules/{scheduleId}")
     public ResponseEntity<Void> delete(
             @SessionAttribute(name = "loginUser", required = false) SessionUser sessionUser,
@@ -64,7 +67,6 @@ public class ScheduleController {
         if (sessionUser == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-
         scheduleService.delete(sessionUser.getId(), scheduleId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

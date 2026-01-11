@@ -17,6 +17,7 @@ public class UserController {
 
     private final UserService userService;
 
+    // 유저 생성 (회원가입)
     @PostMapping("/signup")
     public ResponseEntity<SignupUserResponse> signup(
             @Valid @RequestBody SignupUserRequest request
@@ -24,6 +25,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.save(request));
     }
 
+    // 로그인
     @PostMapping("/login")
     public ResponseEntity<Void> login(
             @Valid @RequestBody LoginUserRequest request,
@@ -33,6 +35,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
+    // 로그아웃
     @PostMapping("/logout")
     public ResponseEntity<Void> logout(
             @SessionAttribute(name = "loginUser", required = false) SessionUser sessionUser,
@@ -41,16 +44,17 @@ public class UserController {
         if (sessionUser == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-
         session.invalidate();
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
+    // 유저 전체 조회
     @GetMapping("/users")
     public ResponseEntity<List<GetUsersResponse>> getAll() {
         return ResponseEntity.status(HttpStatus.OK).body(userService.findAll());
     }
 
+    // 유저 단건 조회
     @GetMapping("/users/{userId}")
     public ResponseEntity<GetUserResponse> getOne(
             @PathVariable Long userId
@@ -58,6 +62,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(userService.findOne(userId));
     }
 
+    // 유저 수정 (회원정보수정)
     @PatchMapping("/users")
     public ResponseEntity<UpdateUserResponse> update(
             @SessionAttribute(name = "loginUser", required = false) SessionUser sessionUser,
@@ -66,10 +71,10 @@ public class UserController {
         if (sessionUser == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-
         return ResponseEntity.status(HttpStatus.OK).body(userService.update(sessionUser.getId(), request));
     }
 
+    // 유저 삭제 (회원탈퇴)
     @DeleteMapping("/users")
     public ResponseEntity<Void> delete(
             @SessionAttribute(name = "loginUser", required = false) SessionUser sessionUser,
@@ -78,9 +83,8 @@ public class UserController {
         if (sessionUser == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-
         userService.delete(sessionUser.getId());
-        session.invalidate();
+        session.invalidate();   // 유저 삭제 시 세션 무효화
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }
