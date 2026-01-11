@@ -1,5 +1,6 @@
 package com.schedulemanagementdevelop.user.service;
 
+import com.schedulemanagementdevelop.common.exception.DuplicateEmailException;
 import com.schedulemanagementdevelop.common.exception.UserNotFoundException;
 import com.schedulemanagementdevelop.common.exception.WrongPasswordException;
 import com.schedulemanagementdevelop.user.config.PasswordEncoder;
@@ -22,6 +23,9 @@ public class UserService {
 
     @Transactional
     public SignupUserResponse save(@Valid SignupUserRequest request) {
+        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
+            throw new DuplicateEmailException("이미 사용 중인 이메일입니다.");
+        }
         String encodedPassword = passwordEncoder.encode(request.getPassword());
         User user = new User(request.getName(), request.getEmail(), encodedPassword);
         User savedUser = userRepository.save(user);
