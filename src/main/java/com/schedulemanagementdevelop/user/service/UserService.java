@@ -3,6 +3,8 @@ package com.schedulemanagementdevelop.user.service;
 import com.schedulemanagementdevelop.common.exception.DuplicateEmailException;
 import com.schedulemanagementdevelop.common.exception.UserNotFoundException;
 import com.schedulemanagementdevelop.common.exception.WrongPasswordException;
+import com.schedulemanagementdevelop.schedule.entity.Schedule;
+import com.schedulemanagementdevelop.schedule.repository.ScheduleRepository;
 import com.schedulemanagementdevelop.user.config.PasswordEncoder;
 import com.schedulemanagementdevelop.user.dto.*;
 import com.schedulemanagementdevelop.user.entity.User;
@@ -20,6 +22,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final ScheduleRepository scheduleRepository;
 
     @Transactional
     public SignupUserResponse save(@Valid SignupUserRequest request) {
@@ -54,10 +57,10 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public List<GetUserResponse> findAll() {
+    public List<GetUsersResponse> findAll() {
         List<User> users = userRepository.findAll();
         return users.stream()
-                .map(user -> new GetUserResponse(
+                .map(user -> new GetUsersResponse(
                         user.getId(),
                         user.getName(),
                         user.getEmail(),
@@ -71,12 +74,19 @@ public class UserService {
         User user = userRepository.findById(userId).orElseThrow(
                 () -> new UserNotFoundException("없는 유저입니다.")
         );
+        List<Schedule> schedules = scheduleRepository.findByUserIdOrderByModifiedAtDesc(userId);
+        List<GetUserSchedulesResponse> userSchedules = schedules.stream()
+                .map(schedule -> new GetUserSchedulesResponse(
+                        schedule.getTitle(),
+                        schedule.getModifiedAt()
+                )).toList();
         return new GetUserResponse(
                 user.getId(),
                 user.getName(),
                 user.getEmail(),
                 user.getCreatedAt(),
-                user.getModifiedAt()
+                user.getModifiedAt(),
+                userSchedules
         );
     }
 

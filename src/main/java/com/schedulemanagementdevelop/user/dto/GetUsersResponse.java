@@ -3,24 +3,21 @@ package com.schedulemanagementdevelop.user.dto;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Getter
-public class GetUserResponse {
+public class GetUsersResponse {
 
     private final Long id;
     private final String name;
     private final String email;
     private final LocalDateTime createdAt;
     private final LocalDateTime modifiedAt;
-    private final List<GetUserSchedulesResponse> schedules;
 
-    public GetUserResponse(Long id, String name, String email, LocalDateTime createdAt, LocalDateTime modifiedAt, List<GetUserSchedulesResponse> schedules) {
+    public GetUsersResponse(Long id, String name, String email, LocalDateTime createdAt, LocalDateTime modifiedAt) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.createdAt = createdAt;
         this.modifiedAt = modifiedAt;
-        this.schedules = schedules;
     }
 }

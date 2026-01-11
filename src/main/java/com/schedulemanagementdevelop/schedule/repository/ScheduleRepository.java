@@ -10,4 +10,6 @@ import java.util.List;
 public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
     @Query("SELECT s FROM Schedule s WHERE :userId IS NULL OR s.user.id = :userId")
     List<Schedule> findByUser(@Param("userId") Long userId);
+
+    List<Schedule> findByUserIdOrderByModifiedAtDesc(Long userId);
 }
