@@ -77,7 +77,7 @@ public class UserService {
     }
 
     @Transactional
-    public UpdateUserResponse update(Long userId, UpdateUserRequest request) {
+    public UpdateUserResponse update(Long userId, @Valid UpdateUserRequest request) {
         User user = userRepository.findById(userId).orElseThrow(
                 () -> new UserNotFoundException("없는 유저입니다.")
         );

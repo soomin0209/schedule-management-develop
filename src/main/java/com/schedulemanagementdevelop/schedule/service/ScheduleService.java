@@ -8,6 +8,7 @@ import com.schedulemanagementdevelop.schedule.entity.Schedule;
 import com.schedulemanagementdevelop.schedule.repository.ScheduleRepository;
 import com.schedulemanagementdevelop.user.entity.User;
 import com.schedulemanagementdevelop.user.repository.UserRepository;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,7 +23,7 @@ public class ScheduleService {
     private final UserRepository userRepository;
 
     @Transactional
-    public CreateScheduleResponse save(Long userId, CreateScheduleRequest request) {
+    public CreateScheduleResponse save(Long userId, @Valid CreateScheduleRequest request) {
         User user = userRepository.findById(userId).orElseThrow(
                 () -> new UserNotFoundException("없는 유저입니다.")
         );
@@ -67,7 +68,7 @@ public class ScheduleService {
     }
 
     @Transactional
-    public UpdateScheduleResponse update(Long userId, Long scheduleId, UpdateScheduleRequest request) {
+    public UpdateScheduleResponse update(Long userId, Long scheduleId, @Valid UpdateScheduleRequest request) {
         Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(
                 () -> new ScheduleNotFoundException("없는 일정입니다.")
         );
