@@ -61,7 +61,7 @@ public class UserController {
     @PatchMapping("/users")
     public ResponseEntity<UpdateUserResponse> update(
             @SessionAttribute(name = "loginUser", required = false) SessionUser sessionUser,
-            @RequestBody UpdateUserRequest request
+            @Valid @RequestBody UpdateUserRequest request
     ) {
         if (sessionUser == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();

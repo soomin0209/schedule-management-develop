@@ -3,6 +3,7 @@ package com.schedulemanagementdevelop.schedule.controller;
 import com.schedulemanagementdevelop.schedule.dto.*;
 import com.schedulemanagementdevelop.schedule.service.ScheduleService;
 import com.schedulemanagementdevelop.user.dto.SessionUser;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +20,7 @@ public class ScheduleController {
     @PostMapping("/schedules")
     public ResponseEntity<CreateScheduleResponse> create(
             @SessionAttribute(name = "loginUser", required = false) SessionUser sessionUser,
-            @RequestBody CreateScheduleRequest request
+            @Valid @RequestBody CreateScheduleRequest request
     ) {
         if (sessionUser == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -46,7 +47,7 @@ public class ScheduleController {
     public ResponseEntity<UpdateScheduleResponse> update(
             @SessionAttribute(name = "loginUser", required = false) SessionUser sessionUser,
             @PathVariable Long scheduleId,
-            @RequestBody UpdateScheduleRequest request
+            @Valid @RequestBody UpdateScheduleRequest request
     ) {
         if (sessionUser == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
