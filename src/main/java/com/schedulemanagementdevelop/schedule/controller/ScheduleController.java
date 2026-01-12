@@ -1,5 +1,6 @@
 package com.schedulemanagementdevelop.schedule.controller;
 
+import com.schedulemanagementdevelop.common.exception.UnauthorizedException;
 import com.schedulemanagementdevelop.schedule.dto.*;
 import com.schedulemanagementdevelop.schedule.service.ScheduleService;
 import com.schedulemanagementdevelop.user.dto.SessionUser;
@@ -24,7 +25,7 @@ public class ScheduleController {
             @Valid @RequestBody CreateScheduleRequest request
     ) {
         if (sessionUser == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            throw new UnauthorizedException("로그인이 필요합니다.");
         }
         return ResponseEntity.status(HttpStatus.CREATED).body(scheduleService.save(sessionUser.getId(), request));
     }
@@ -53,7 +54,7 @@ public class ScheduleController {
             @Valid @RequestBody UpdateScheduleRequest request
     ) {
         if (sessionUser == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            throw new UnauthorizedException("로그인이 필요합니다.");
         }
         return ResponseEntity.status(HttpStatus.OK).body(scheduleService.update(sessionUser.getId(), scheduleId, request));
     }
@@ -65,7 +66,7 @@ public class ScheduleController {
             @PathVariable Long scheduleId
     ) {
         if (sessionUser == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            throw new UnauthorizedException("로그인이 필요합니다.");
         }
         scheduleService.delete(sessionUser.getId(), scheduleId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();

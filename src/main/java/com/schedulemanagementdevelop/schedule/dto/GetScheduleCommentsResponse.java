@@ -1,7 +1,10 @@
 package com.schedulemanagementdevelop.schedule.dto;
 
+import lombok.Getter;
+
 import java.time.LocalDateTime;
 
+@Getter
 public class GetScheduleCommentsResponse {
 
     private final String content;

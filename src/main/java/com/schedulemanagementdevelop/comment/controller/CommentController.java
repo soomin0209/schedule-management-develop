@@ -2,6 +2,7 @@ package com.schedulemanagementdevelop.comment.controller;
 
 import com.schedulemanagementdevelop.comment.dto.*;
 import com.schedulemanagementdevelop.comment.service.CommentService;
+import com.schedulemanagementdevelop.common.exception.UnauthorizedException;
 import com.schedulemanagementdevelop.user.dto.SessionUser;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +26,7 @@ public class CommentController {
             @Valid @RequestBody CreateCommentRequest request
     ) {
         if (sessionUser == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            throw new UnauthorizedException("로그인이 필요합니다.");
         }
         return ResponseEntity.status(HttpStatus.CREATED).body(commentService.save(sessionUser.getId(), scheduleId, request));
     }
@@ -47,7 +48,7 @@ public class CommentController {
             @Valid @RequestBody UpdateCommentRequest request
     ) {
         if (sessionUser == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            throw new UnauthorizedException("로그인이 필요합니다.");
         }
         return ResponseEntity.status(HttpStatus.OK).body(commentService.update(sessionUser.getId(),scheduleId, commentId, request));
     }
@@ -60,7 +61,7 @@ public class CommentController {
             @PathVariable Long commentId
     ) {
         if (sessionUser == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            throw new UnauthorizedException("로그인이 필요합니다.");
         }
         commentService.delete(sessionUser.getId(), scheduleId, commentId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();

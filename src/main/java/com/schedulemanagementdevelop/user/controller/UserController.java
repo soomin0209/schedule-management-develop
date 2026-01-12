@@ -1,5 +1,6 @@
 package com.schedulemanagementdevelop.user.controller;
 
+import com.schedulemanagementdevelop.common.exception.UnauthorizedException;
 import com.schedulemanagementdevelop.user.dto.*;
 import com.schedulemanagementdevelop.user.service.UserService;
 import jakarta.servlet.http.HttpSession;
@@ -42,7 +43,7 @@ public class UserController {
             HttpSession session
     ) {
         if (sessionUser == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            throw new UnauthorizedException("로그인이 필요합니다.");
         }
         session.invalidate();
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
@@ -69,7 +70,7 @@ public class UserController {
             @Valid @RequestBody UpdateUserRequest request
     ) {
         if (sessionUser == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            throw new UnauthorizedException("로그인이 필요합니다.");
         }
         return ResponseEntity.status(HttpStatus.OK).body(userService.update(sessionUser.getId(), request));
     }
@@ -81,7 +82,7 @@ public class UserController {
             HttpSession session
     ) {
         if (sessionUser == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            throw new UnauthorizedException("로그인이 필요합니다.");
         }
         userService.delete(sessionUser.getId());
         session.invalidate();   // 유저 삭제 시 세션 무효화

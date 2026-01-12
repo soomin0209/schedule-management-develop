@@ -47,6 +47,9 @@ public class CommentService {
     // 댓글 조회
     @Transactional(readOnly = true)
     public List<GetCommentResponse> findAll(Long scheduleId) {
+        Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(
+                () -> new ScheduleNotFoundException("없는 일정입니다.")
+        );
         List<Comment> comments = commentRepository.findByScheduleIdOrderByCreatedAt(scheduleId);
         return comments.stream()
                 .map(comment -> new GetCommentResponse(
